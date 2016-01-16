@@ -1,7 +1,6 @@
 package metadata
 
 import (
-	"github.com/bernardolins/vandame/file"
 	"gopkg.in/yaml.v2"
 	"log"
 	"os"

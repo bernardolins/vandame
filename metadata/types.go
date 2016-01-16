@@ -1,7 +1,7 @@
 package metadata
 
 type Specification struct {
-	Machine string  `yaml: "machine"`
+	Machine Machine `yaml: "machine"`
 	Cluster Cluster `yaml: "cluster"`
 }
 
