@@ -1,7 +1,8 @@
 # vandame
 
 ## Config
-``yaml
+
+```yaml
 machine:
   name: "caxias"
   networkInterfaces:
@@ -20,10 +21,4 @@ cluster:
     clusterIp: "192.168.0.4"
   - name: "araruama"
     clusterIp: "192.168.0.5"
-``
-
-Rodar o comando:
-
-``bash
-./config-generator.sh config.yaml
 ```
