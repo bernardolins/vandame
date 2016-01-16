@@ -1,5 +1,10 @@
 package metadata
 
+type Specification struct {
+	Machine string  `yaml: "machine"`
+	Cluster Cluster `yaml: "cluster"`
+}
+
 type Machine struct {
 	Name       string      `yaml: "name"`
 	Interfaces []Interface `yaml: "interfaces,omitempty"`
