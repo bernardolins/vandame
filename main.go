@@ -1,10 +1,14 @@
 package main
 
 import (
-	"github.com/bernardolins/vandame/file"
-	"github.com/bernardolins/vandame/metadata"
+	"fmt"
+	"github.com/bernardolins/vandame/cmd"
+	"os"
 )
 
 func main() {
-	metadata.Build()
+	if err := cmd.VandameCommand.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
