@@ -1,17 +1,15 @@
 machine:
   name: "caxias"
-  networkInterfaces:
-  - name: "enps3"
-    ip: "192.168.0.2"
-  - name: "enp4s"
-    ip: "10.0.2.3"
+  ip: "192.168.0.2"
+  interface: "enps3"
 
 cluster:
   name: "rio"
   state: "new"
   machines:
+  - name: "caxias"
+    ip: "192.168.0.2"
   - name: "macae"
-    clusterIp: "192.168.0.3"
+    ip: "192.168.0.3"
   - name: "campos"
-    clusterIp: "192.168.0.4"
-
+    ip: "192.168.0.4"

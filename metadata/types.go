@@ -6,8 +6,10 @@ type Specification struct {
 }
 
 type Machine struct {
-	Name       string      `yaml: "name"`
-	Interfaces []Interface `yaml: "interfaces,omitempty"`
+	Name      string `yaml: "name"`
+	Ip        string `yaml: "ip"`
+	Interface string `yaml: "interface"`
+	//Interfaces []Interface `yaml: "interfaces,omitempty"`
 }
 
 type Interface struct {
@@ -22,6 +24,6 @@ type Cluster struct {
 }
 
 type ClusterMachine struct {
-	Name      string `yaml: "name"`
-	clusterIp string `yaml: "name"`
+	Name string `yaml: "name"`
+	Ip   string `yaml: "ip"`
 }

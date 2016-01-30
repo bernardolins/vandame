@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/bernardolins/vandame/coreos"
 	"github.com/bernardolins/vandame/file"
 	"github.com/bernardolins/vandame/metadata"
 	"github.com/spf13/cobra"
@@ -43,21 +44,19 @@ func NewGenerateCommand() *GenerateCommand {
 // Runs the generate command
 func (generate *GenerateCommand) run() {
 	file := file.Load(generate.input)
-	metadata := metadata.Build(file)
-	generate.loadTemplates(metadata, generate.templates)
+	spec := metadata.Build(file)
+	config := coreos.Config(spec)
+
+	generate.loadTemplates(config)
 }
 
 // Helper file to load templates. May be extracted to another module.
-func (generate *GenerateCommand) loadTemplates(spec metadata.Specification, templatePath string) {
-	files := file.Ls(generate.templates)
+func (generate *GenerateCommand) loadTemplates(config *coreos.CoreOs) {
+	templateFiles := file.Ls(generate.templates)
 
-	for _, f := range files {
-		b := file.Load(generate.input)
-		spec := metadata.Build(b)
-
+	for _, f := range templateFiles {
 		t := template.New(f)
-		t, _ = t.ParseFiles(templatePath + f)
-		t.Execute(os.Stdout, spec)
+		t, _ = t.ParseFiles(generate.templates + f)
+		t.Execute(os.Stdout, config)
 	}
-
 }
