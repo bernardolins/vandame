@@ -5,6 +5,7 @@ import (
 	"github.com/bernardolins/vandame/file"
 	"github.com/bernardolins/vandame/metadata"
 	"github.com/spf13/cobra"
+	"log"
 	"os"
 	"text/template"
 )
@@ -44,19 +45,36 @@ func NewGenerateCommand() *GenerateCommand {
 // Runs the generate command
 func (generate *GenerateCommand) run() {
 	file := file.Load(generate.input)
-	spec := metadata.Build(file)
-	config := coreos.Config(spec)
+	config := metadata.Build(file)
 
-	generate.loadTemplates(config)
+	for _, node := range config.GetClusterNodes() {
+		coreos := coreos.Config(node.GetNodeName(), config)
+		//generate.executeTemplates(coreos)
+
+		dirname := node.GetNodeName()
+
+		err := os.Mkdir(dirname, os.ModePerm)
+		if err != nil {
+			log.Fatalf("---- error %v", err)
+			os.Exit(1)
+		}
+
+		filename := node.GetNodeName() + "-cloud-config.yml"
+
+		file, err := os.Create(dirname + "/" + filename)
+		defer file.Close()
+
+		generate.executeTemplates(file, coreos)
+	}
 }
 
 // Helper file to load templates. May be extracted to another module.
-func (generate *GenerateCommand) loadTemplates(config *coreos.CoreOs) {
+func (generate *GenerateCommand) executeTemplates(output *os.File, config *coreos.CoreOs) {
 	templateFiles := file.Ls(generate.templates)
 
 	for _, f := range templateFiles {
 		t := template.New(f)
 		t, _ = t.ParseFiles(generate.templates + f)
-		t.Execute(os.Stdout, config)
+		t.Execute(output, config)
 	}
 }
