@@ -6,21 +6,21 @@ import (
 	"os"
 )
 
-func Build(bytes []byte) Specification {
-	spec := serialize(bytes)
+func Build(bytes []byte) Config {
+	cluster := serialize(bytes)
 
-	return spec
+	return cluster
 }
 
-func serialize(metadata []byte) Specification {
-	spec := Specification{}
+func serialize(metadata []byte) Config {
+	cluster := Config{}
 
-	err := yaml.Unmarshal(metadata, &spec)
+	err := yaml.Unmarshal(metadata, &cluster)
 
 	if err != nil {
 		log.Fatalf("-- error %v", err)
 		os.Exit(1)
 	}
 
-	return spec
+	return cluster
 }
