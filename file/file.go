@@ -36,3 +36,16 @@ func Ls(dir string) []string {
 
 	return filenames
 }
+
+func CreateFileAndDir(dirname string, filename string) *os.File {
+	err := os.Mkdir(dirname, os.ModePerm)
+	if err != nil {
+		log.Fatalf("---- error %v", err)
+		os.Exit(1)
+	}
+
+	file, err := os.Create(dirname + "/" + filename)
+	defer file.Close()
+
+	return file
+}

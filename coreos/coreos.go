@@ -1,7 +1,7 @@
 package coreos
 
 type CoreOs struct {
-	EtcdConfig Etcd2
+	Etcd Etcd2
 }
 
 type Etcd2 struct {

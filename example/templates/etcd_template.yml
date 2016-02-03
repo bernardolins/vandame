@@ -1,9 +1,0 @@
-etcd2:
-  name: {{.EtcdConfig.MachineName}}
-  initial-cluster-token: {{.EtcdConfig.InitialClusterToken}}
-  initial-cluster: {{.EtcdConfig.InitialCluster}}
-  initial-cluster-state: new
-  initial-advertise-peer-urls: http://{{.Machine.Ip}}:2380
-  listen-peer-urls: http://{{.Machine.Ip}}:2380
-  listen-client-urls: http://{{.Machine.Ip}}:2379,http://127.0.0.1:2379
-  advertise-client-urls: http://{{.Machine.Ip}}:2379

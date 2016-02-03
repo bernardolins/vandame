@@ -7,15 +7,15 @@ import (
 func Config(name string, config metadata.Config) *CoreOs {
 	coreos := new(CoreOs)
 
-	coreos.EtcdConfig.MachineName = name
+	coreos.Etcd.MachineName = name
 	configureEtcd2(coreos, config)
 
 	return coreos
 }
 
 func configureEtcd2(coreos *CoreOs, config metadata.Config) {
-	coreos.EtcdConfig.InitialClusterToken = config.GetClusterToken()
-	coreos.EtcdConfig.InitialClusterState = config.GetClusterState()
+	coreos.Etcd.InitialClusterToken = config.GetClusterToken()
+	coreos.Etcd.InitialClusterState = config.GetClusterState()
 	setEtcd2InitialCluster(coreos, config.GetClusterNodes())
 }
 
@@ -31,5 +31,5 @@ func setEtcd2InitialCluster(config *CoreOs, nodes []metadata.Node) {
 		initialClusterString = initialClusterString + nodeString
 	}
 
-	config.EtcdConfig.InitialCluster = initialClusterString
+	config.Etcd.InitialCluster = initialClusterString
 }
