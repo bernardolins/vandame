@@ -4,37 +4,32 @@ import (
 	"github.com/bernardolins/vandame/metadata"
 )
 
-func Config(spec metadata.Specification) *CoreOs {
-	config := new(CoreOs)
+func Config(name string, config metadata.Config) *CoreOs {
+	coreos := new(CoreOs)
 
-	configureEtcd2(config, spec)
-	configureMachine(config, spec)
+	coreos.EtcdConfig.MachineName = name
+	configureEtcd2(coreos, config)
 
-	return config
+	return coreos
 }
 
-func configureEtcd2(config *CoreOs, spec metadata.Specification) {
-	config.EtcdConfig.MachineName = spec.Machine.Name
-	config.EtcdConfig.InitialClusterToken = spec.Cluster.Name
-	setEtcd2InitialCluster(config, spec.Cluster.Machines)
+func configureEtcd2(coreos *CoreOs, config metadata.Config) {
+	coreos.EtcdConfig.InitialClusterToken = config.GetClusterToken()
+	coreos.EtcdConfig.InitialClusterState = config.GetClusterState()
+	setEtcd2InitialCluster(coreos, config.GetClusterNodes())
 }
 
-func setEtcd2InitialCluster(config *CoreOs, machines []metadata.ClusterMachine) {
+func setEtcd2InitialCluster(config *CoreOs, nodes []metadata.Node) {
 	initialClusterString := ""
-	for _, machine := range machines {
+	for _, node := range nodes {
 
 		if initialClusterString != "" {
 			initialClusterString = initialClusterString + ","
 		}
 
-		machineString := machine.Name + "=http://" + machine.Ip + ":2380"
-		initialClusterString = initialClusterString + machineString
+		nodeString := node.GetNodeName() + "=http://" + node.GetNodeIp() + ":2380"
+		initialClusterString = initialClusterString + nodeString
 	}
 
 	config.EtcdConfig.InitialCluster = initialClusterString
-}
-
-func configureMachine(config *CoreOs, spec metadata.Specification) {
-	config.Machine.Ip = spec.Machine.Ip
-	config.Machine.Interface = spec.Machine.Interface
 }
