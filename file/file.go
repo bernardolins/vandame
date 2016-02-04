@@ -45,7 +45,6 @@ func CreateFileAndDir(dirname string, filename string) *os.File {
 	}
 
 	file, err := os.Create(dirname + "/" + filename)
-	defer file.Close()
 
 	return file
 }
