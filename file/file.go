@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
 // Loads a file from path.
@@ -31,7 +32,9 @@ func Ls(dir string) []string {
 	}
 
 	for _, f := range files {
-		filenames = append(filenames, f.Name())
+		if strings.HasSuffix(f.Name(), "_template.yml") || strings.HasSuffix(f.Name(), "_template.yaml") {
+			filenames = append(filenames, f.Name())
+		}
 	}
 
 	return filenames
