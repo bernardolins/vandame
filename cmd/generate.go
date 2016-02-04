@@ -49,12 +49,13 @@ func (generate *GenerateCommand) run() {
 
 	for _, node := range config.GetClusterNodes() {
 		coreos := coreos.Config(node.GetNodeName(), config)
-		member := cluster.MemberConfig(node, coreos)
+		member := cluster.MemberConfig(node, *coreos)
 
 		dirname := node.GetNodeName()
 		filename := node.GetNodeName() + "-cloud-config.yaml"
 
 		outputFile := file.CreateFileAndDir(dirname, filename)
+		defer outputFile.Close()
 		generate.executeTemplates(outputFile, member)
 	}
 }
