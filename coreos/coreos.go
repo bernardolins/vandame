@@ -9,4 +9,5 @@ type Etcd2 struct {
 	InitialCluster      string
 	InitialClusterState string
 	InitialClusterToken string
+	Endpoints           string
 }
