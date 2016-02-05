@@ -12,6 +12,7 @@ type Cluster struct {
 	Token      string `yaml: "token"`
 	State      string `yaml: "state"`
 	Nodes      []Node `yaml: "nodes"`
+	Units      []Unit `yaml: "units"`
 }
 
 func (config *Config) GetClusterToken() string {
@@ -28,6 +29,10 @@ func (config *Config) GetUseKubernetes() bool {
 
 func (config *Config) GetClusterNodes() []Node {
 	return config.Cluster.Nodes
+}
+
+func (config *Config) GetSystemdUnits() []Unit {
+	return config.Cluster.Units
 }
 
 //
@@ -49,4 +54,25 @@ func (node *Node) GetNodeIp() string {
 
 func (node *Node) GetNodeInterface() string {
 	return node.Interface
+}
+
+//
+// Systemd unit
+//
+type Unit struct {
+	Name    string `yaml: "name"`
+	Content string `yaml: "content"`
+	Command string `yaml: "command"`
+}
+
+func (unit *Unit) GetUnitName() string {
+	return unit.Name
+}
+
+func (unit *Unit) GetUnitContentPath() string {
+	return unit.Content
+}
+
+func (unit *Unit) GetUnitCommand() string {
+	return unit.Command
 }

@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/bernardolins/vandame/cluster"
 	"github.com/bernardolins/vandame/coreos"
 	"github.com/bernardolins/vandame/file"
 	"github.com/bernardolins/vandame/metadata"
+	"github.com/bernardolins/vandame/systemd"
 	"github.com/spf13/cobra"
 	"os"
 	"text/template"
@@ -51,11 +53,17 @@ func (generate *GenerateCommand) run() {
 		coreos := coreos.Config(node.GetNodeName(), config)
 		member := cluster.MemberConfig(node, *coreos)
 
+		for _, unit := range config.GetSystemdUnits() {
+			systemdUnit := systemd.UnitConfig(unit.GetUnitName(), unit.GetUnitCommand(), unit.GetUnitContentPath())
+			member.AddUnit(*systemdUnit)
+		}
+
 		dirname := node.GetNodeName()
 		filename := node.GetNodeName() + "-cloud-config.yaml"
 
 		outputFile := file.CreateFileAndDir(dirname, filename)
 		defer outputFile.Close()
+
 		generate.executeTemplates(outputFile, member)
 	}
 }
@@ -66,7 +74,12 @@ func (generate *GenerateCommand) executeTemplates(output *os.File, config *clust
 
 	for _, f := range templateFiles {
 		t := template.New(f)
-		t, _ = t.ParseFiles(generate.templates + f)
-		t.Execute(output, config)
+		t, err := t.ParseFiles(generate.templates + f)
+
+		if err != nil {
+			fmt.Printf("%v\n", err)
+			os.Exit(1)
+		}
+		t.Execute(os.Stdout, config)
 	}
 }
