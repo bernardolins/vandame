@@ -61,7 +61,7 @@ func (node *Node) GetNodeInterface() string {
 //
 type Unit struct {
 	Name    string `yaml: "name"`
-	Content string `yaml: "content"`
+	Content string `yaml: "content,omitempty"`
 	Command string `yaml: "command"`
 }
 

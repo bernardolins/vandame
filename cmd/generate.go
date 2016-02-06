@@ -7,6 +7,7 @@ import (
 	"github.com/bernardolins/vandame/file"
 	"github.com/bernardolins/vandame/metadata"
 	"github.com/bernardolins/vandame/systemd"
+	"github.com/bernardolins/vandame/templates"
 	"github.com/spf13/cobra"
 	"os"
 	"text/template"
@@ -49,6 +50,8 @@ func (generate *GenerateCommand) run() {
 	inputFile := file.Load(generate.input)
 	config := metadata.Build(inputFile)
 
+	nodeTemplate := new(templates.Node)
+
 	for _, node := range config.GetClusterNodes() {
 		coreos := coreos.Config(node.GetNodeName(), config)
 		member := cluster.MemberConfig(node, *coreos)
@@ -58,18 +61,23 @@ func (generate *GenerateCommand) run() {
 			member.AddUnit(*systemdUnit)
 		}
 
+		unitTemp := new(templates.Units)
+
+		unitTemp.SetText(member)
+		nodeTemplate.Units = *unitTemp
+
 		dirname := node.GetNodeName()
 		filename := node.GetNodeName() + "-cloud-config.yaml"
 
 		outputFile := file.CreateFileAndDir(dirname, filename)
 		defer outputFile.Close()
 
-		generate.executeTemplates(outputFile, member)
+		generate.executeTemplates(outputFile, nodeTemplate)
 	}
 }
 
 // Helper file to load templates. May be extracted to another module.
-func (generate *GenerateCommand) executeTemplates(output *os.File, config *cluster.Member) {
+func (generate *GenerateCommand) executeTemplates(output *os.File, config *templates.Node) {
 	templateFiles := file.Ls(generate.templates)
 
 	for _, f := range templateFiles {

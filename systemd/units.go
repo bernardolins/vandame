@@ -5,7 +5,7 @@ import (
 )
 
 type Unit struct {
-	Content []byte
+	Content string
 	Name    string
 	Command string
 }
@@ -13,8 +13,10 @@ type Unit struct {
 func UnitConfig(name, command, path string) *Unit {
 	unit := new(Unit)
 
-	content := file.Load(path)
-	unit.Content = content
+	if path != "" {
+		content := file.Load(path)
+		unit.Content = string(content)
+	}
 
 	unit.Name = name
 	unit.Command = command
